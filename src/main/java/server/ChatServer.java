@@ -18,7 +18,7 @@ public class ChatServer implements Runnable {
 
     private final int port;
 
-    private volatile boolean isRunning;
+    private volatile boolean isRunning = false;
 
     private final ConcurrentHashMap<String, ClientHandler> clients = new ConcurrentHashMap<>();
 

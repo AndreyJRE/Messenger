@@ -43,7 +43,6 @@ public class ClientHandler implements Runnable {
                     Message message = (Message) in.readObject();
                     handleIncomingMessage(message);
                 } catch (EOFException e) {
-                    System.out.println("Client disconnected.");
                     break;
                 }
             }
