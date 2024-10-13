@@ -10,15 +10,20 @@ public class MessengerMain {
 
     public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Do you want to start the new chat or join existing one? (start/join)");
-        String answer = scanner.next();
-        if (answer.equalsIgnoreCase("start")) {
-            handleStart(scanner);
-        } else if (answer.equalsIgnoreCase("join")) {
-            handleJoin(scanner);
-        } else {
-            System.out.println("Invalid input");
+        while (true) {
+            System.out.println("Do you want to start the new chat or join existing one? (start/join)");
+            String answer = scanner.next();
+            if (answer.equalsIgnoreCase("start")) {
+                handleStart(scanner);
+                break;
+            } else if (answer.equalsIgnoreCase("join")) {
+                handleJoin(scanner);
+                break;
+            } else {
+                System.out.println("Invalid input");
+            }
         }
+
     }
 
     private static void handleJoin(Scanner scanner) {

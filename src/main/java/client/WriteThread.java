@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 class WriteThread extends Thread {
 
-    private final ObjectOutputStream writer;
+    private ObjectOutputStream writer;
 
     private final Socket socket;
 
@@ -20,20 +20,22 @@ class WriteThread extends Thread {
     public WriteThread(Socket socket, ChatClient client) {
         this.socket = socket;
         this.client = client;
-
-        try {
-            writer = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void run() {
+        try {
+            writer = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            System.out.println("Error getting output stream: " + e.getMessage());
+        }
         Scanner scanner = new Scanner(System.in);
         String username = getUsername(scanner);
         String text;
         while (true) {
             text = scanner.nextLine();
+            if (text.isEmpty()) {
+                continue;
+            }
             if (text.equalsIgnoreCase("exit")) {
                 break;
             }

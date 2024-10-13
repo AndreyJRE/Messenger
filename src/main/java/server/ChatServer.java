@@ -17,10 +17,8 @@ import lombok.Setter;
 public class ChatServer implements Runnable {
 
     private final int port;
-
-    private volatile boolean isRunning = false;
-
     private final ConcurrentHashMap<String, ClientHandler> clients = new ConcurrentHashMap<>();
+    private volatile boolean isRunning = false;
 
     public ChatServer(int port) {
         this.port = port;
@@ -49,7 +47,7 @@ public class ChatServer implements Runnable {
             .forEach(client -> sendMessage(message, client));
     }
 
-    private void sendMessage(Message message, ClientHandler clientHandler) {
+    public void sendMessage(Message message, ClientHandler clientHandler) {
         try {
             ObjectOutputStream out = clientHandler.getOut();
             out.writeObject(message);
@@ -72,8 +70,11 @@ public class ChatServer implements Runnable {
     }
 
     public void removeClient(String username, ClientHandler clientHandler, ConnectionMessage message) {
-        clients.remove(username);
-        broadcastMessage(message, clientHandler);
+        if (clients.containsKey(username)) {
+            clients.remove(username);
+            broadcastMessage(message, clientHandler);
+        }
+
     }
 
     public boolean isUsernameTaken(String username) {

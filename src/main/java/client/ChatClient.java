@@ -33,12 +33,12 @@ public class ChatClient {
         }
     }
 
-    public void setConnectedToChat(boolean connectedToChat) {
-        this.connectedToChat.set(connectedToChat);
-    }
-
     public boolean isConnectedToChat() {
         return connectedToChat.get();
+    }
+
+    public void setConnectedToChat(boolean connectedToChat) {
+        this.connectedToChat.set(connectedToChat);
     }
 
 }
