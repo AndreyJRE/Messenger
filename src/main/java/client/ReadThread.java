@@ -12,12 +12,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class ReadThread extends Thread {
 
-    private ObjectInputStream reader;
-
     private final Socket socket;
-
     private final ChatClient client;
-
+    private ObjectInputStream reader;
 
     public void run() {
         try {

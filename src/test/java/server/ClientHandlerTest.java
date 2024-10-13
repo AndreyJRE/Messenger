@@ -11,7 +11,6 @@ import common.message.ChatMessage;
 import common.message.ConnectionMessage;
 import common.message.ConnectionType;
 import common.message.Message;
-import java.io.IOException;
 import java.net.Socket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class ClientHandlerTest {
 
 
     @BeforeEach
-    void setUp()  {
+    void setUp() {
         chatServer = mock(ChatServer.class);
         socket = mock(Socket.class);
         clientHandler = new ClientHandler(socket, chatServer);
@@ -49,7 +48,7 @@ public class ClientHandlerTest {
     }
 
     @Test
-    void testHandleIncomingMessage_ConnectionMessageJoin()  {
+    void testHandleIncomingMessage_ConnectionMessageJoin() {
         ConnectionMessage connectionMessage = new ConnectionMessage("user", ConnectionType.JOIN);
         doNothing().when(chatServer).addClient("user", clientHandler, connectionMessage);
 
