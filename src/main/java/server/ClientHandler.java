@@ -43,6 +43,7 @@ public class ClientHandler implements Runnable {
             while (true) {
                 if (socket.isClosed()) {
                     handleClientDisconnection();
+                    break;
                 }
                 try {
                     Message message = (Message) in.readObject();
