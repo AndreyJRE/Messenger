@@ -3,6 +3,7 @@ package client;
 import common.message.ChatMessage;
 import common.message.ConnectionMessage;
 import common.message.ConnectionType;
+import common.message.ExtendedChatMessage;
 import common.message.Message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -44,7 +45,7 @@ class WriteThread extends Thread {
             if (text.equalsIgnoreCase("exit")) {
                 break;
             }
-            ChatMessage message = new ChatMessage(username, text);
+            ChatMessage message = new ExtendedChatMessage(username, text,"test");
             System.out.println("[" + message.getTimestamp() + "] " + "You: " + text);
             sendMessage(message);
         }
