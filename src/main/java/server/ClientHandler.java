@@ -22,6 +22,8 @@ public class ClientHandler implements Runnable {
 
     private ObjectOutputStream out;
 
+    private String username;
+
 
     public ClientHandler(Socket socket, ChatServer chatServer) {
         this.socket = socket;
@@ -35,10 +37,13 @@ public class ClientHandler implements Runnable {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            System.out.println("Error getting input stream: " + e.getMessage());
+            handleClientDisconnection();
         }
         try {
             while (true) {
+                if (socket.isClosed()) {
+                    handleClientDisconnection();
+                }
                 try {
                     Message message = (Message) in.readObject();
                     handleIncomingMessage(message);
@@ -51,9 +56,17 @@ public class ClientHandler implements Runnable {
         } finally {
             try {
                 socket.close();
+                handleClientDisconnection();
             } catch (IOException e) {
                 System.out.println("Error closing socket: " + e.getMessage());
+                handleClientDisconnection();
             }
+        }
+    }
+
+    private void handleClientDisconnection() {
+        if (username != null) {
+            chatServer.removeClient(username, this, new ConnectionMessage(username, ConnectionType.EXIT));
         }
     }
 
@@ -70,10 +83,14 @@ public class ClientHandler implements Runnable {
     }
 
     public void handleConnectionMessage(ConnectionMessage c) {
-        if (c.getType() == ConnectionType.JOIN) {
-            chatServer.addClient(c.getUsername(), this, c);
-        } else if (c.getType() == ConnectionType.EXIT) {
-            chatServer.removeClient(c.getUsername(), this, c);
+        String s = c.getUsername();
+        switch (c.getType()) {
+            case JOIN -> {
+                chatServer.addClient(s, this, c);
+                username = s;
+            }
+            case EXIT -> chatServer.removeClient(s, this, c);
+            default -> throw new IllegalArgumentException("Unknown connection type: " + c.getType());
         }
     }
 }

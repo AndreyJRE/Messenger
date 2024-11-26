@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,7 @@ public class ChatServer implements Runnable {
 
     private final int port;
     private final ConcurrentHashMap<String, ClientHandler> clients = new ConcurrentHashMap<>();
-    private volatile boolean isRunning = false;
+    private AtomicBoolean running = new AtomicBoolean(false);
 
     public ChatServer(int port) {
         this.port = port;
@@ -26,10 +27,10 @@ public class ChatServer implements Runnable {
 
     @Override
     public void run() {
-        this.isRunning = true;
+        this.running.set(true);
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            while (isRunning) {
+            while (running.get()) {
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 new Thread(clientHandler).start();
@@ -37,7 +38,7 @@ public class ChatServer implements Runnable {
             serverSocket.close();
         } catch (IOException e) {
             System.out.println("Error in the server: " + e.getMessage());
-            this.isRunning = false;
+            this.running.set(false);
         }
     }
 
@@ -53,7 +54,7 @@ public class ChatServer implements Runnable {
             out.writeObject(message);
             out.flush();
         } catch (IOException e) {
-            System.out.println("Error sending message: " + e.getMessage());
+            throw new RuntimeException("Error sending message to the client: " + e.getMessage());
         }
 
     }

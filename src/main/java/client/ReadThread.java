@@ -28,6 +28,7 @@ class ReadThread extends Thread {
                 handleMessage(message);
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Connection to the server is lost");
+                client.disconnect();
                 break;
             }
         }

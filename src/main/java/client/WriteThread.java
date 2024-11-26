@@ -13,11 +13,13 @@ class WriteThread extends Thread {
 
     private final Socket socket;
     private final ChatClient client;
+    private final Scanner scanner;
     private ObjectOutputStream writer;
 
     public WriteThread(Socket socket, ChatClient client) {
         this.socket = socket;
         this.client = client;
+        this.scanner = new Scanner(System.in);
     }
 
     public void run() {
@@ -25,12 +27,17 @@ class WriteThread extends Thread {
             writer = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             System.out.println("Error getting output stream: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-        Scanner scanner = new Scanner(System.in);
+
         String username = getUsername(scanner);
         String text;
         while (true) {
             text = scanner.nextLine();
+            if (!client.isConnectedToChat()) {
+                System.out.println("You are disconnected from the chat");
+                break;
+            }
             if (text.isEmpty()) {
                 continue;
             }
@@ -43,8 +50,11 @@ class WriteThread extends Thread {
         }
 
         try {
-            sendMessage(new ConnectionMessage(username, ConnectionType.EXIT));
-            socket.close();
+            if (!socket.isClosed()) {
+                sendMessage(new ConnectionMessage(username, ConnectionType.EXIT));
+                socket.close();
+                client.disconnect();
+            }
         } catch (IOException e) {
             System.out.println("Error by socket closing" + e.getMessage());
         }
@@ -74,5 +84,9 @@ class WriteThread extends Thread {
         } catch (IOException e) {
             System.out.println("Error writing to server: " + e.getMessage());
         }
+    }
+
+    public void closeScanner() {
+        scanner.close();
     }
 }

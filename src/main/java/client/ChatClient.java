@@ -19,12 +19,18 @@ public class ChatClient {
 
     private AtomicBoolean connectedToChat = new AtomicBoolean(false);
 
+    private WriteThread writeThread;
+
+    private ReadThread readThread;
+
+    private Socket socket;
+
     public void execute() {
         try {
-            Socket socket = new Socket(hostname, port);
+            socket = new Socket(hostname, port);
             System.out.println("Connected to the server on port " + port);
-            WriteThread writeThread = new WriteThread(socket, this);
-            ReadThread readThread = new ReadThread(socket, this);
+            writeThread = new WriteThread(socket, this);
+            readThread = new ReadThread(socket, this);
             readThread.start();
             writeThread.start();
 
@@ -39,6 +45,21 @@ public class ChatClient {
 
     public void setConnectedToChat(boolean connectedToChat) {
         this.connectedToChat.set(connectedToChat);
+    }
+
+    public void disconnect() {
+        connectedToChat.set(false);
+        if (!socket.isClosed()) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.out.println("Error by socket closing" + e.getMessage());
+            }
+        }
+        readThread.interrupt();
+        writeThread.closeScanner();
+        writeThread.interrupt();
+
     }
 
 }
