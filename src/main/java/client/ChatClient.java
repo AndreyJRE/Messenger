@@ -56,9 +56,7 @@ public class ChatClient {
                 System.out.println("Error by socket closing" + e.getMessage());
             }
         }
-        readThread.interrupt();
-        writeThread.closeScanner();
-        writeThread.interrupt();
+        writeThread.closeInputStream();
 
     }
 

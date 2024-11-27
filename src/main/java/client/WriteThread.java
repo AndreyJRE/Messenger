@@ -30,12 +30,12 @@ class WriteThread extends Thread {
             throw new RuntimeException(e);
         }
 
-        String username = getUsername(scanner);
+        String username = getUsername();
         String text;
         while (true) {
-            // TODO If client is disconnected scanner is still waiting for input but it should break the loop
-            text = scanner.nextLine();
-            if (!client.isConnectedToChat()) {
+            try {
+                text = scanner.nextLine();
+            } catch (Exception e) {
                 System.out.println("You are disconnected from the chat");
                 break;
             }
@@ -63,11 +63,15 @@ class WriteThread extends Thread {
 
     }
 
-    private String getUsername(Scanner scanner) {
+    private String getUsername() {
         String username = "";
         while (!client.isConnectedToChat()) {
             System.out.println("Enter your username:");
             username = scanner.nextLine();
+            if (username.isEmpty()) {
+                System.out.println("Username cannot be empty");
+                continue;
+            }
             sendMessage(new ConnectionMessage(username, ConnectionType.JOIN));
             try {
                 Thread.sleep(500);
@@ -87,7 +91,12 @@ class WriteThread extends Thread {
         }
     }
 
-    public void closeScanner() {
-        scanner.close();
+    // Handle server disconnection
+    public void closeInputStream() {
+        try {
+            System.in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

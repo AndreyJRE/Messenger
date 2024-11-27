@@ -18,7 +18,9 @@ import lombok.Setter;
 public class ChatServer implements Runnable {
 
     private final int port;
+
     private final ConcurrentHashMap<String, ClientHandler> clients = new ConcurrentHashMap<>();
+
     private AtomicBoolean running = new AtomicBoolean(false);
 
     public ChatServer(int port) {

@@ -10,16 +10,18 @@ public class MessengerMain {
 
     private static final String HOST = "localhost";
 
+    private static Scanner scanner;
+
     public static void main(String[] args) throws InterruptedException {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Do you want to start the new chat or join existing one? (start/join)");
             String answer = scanner.next();
             if (answer.equalsIgnoreCase("start")) {
-                handleStart(scanner);
+                handleStart();
                 break;
             } else if (answer.equalsIgnoreCase("join")) {
-                handleJoin(scanner);
+                handleJoin();
                 break;
             } else {
                 System.out.println("Invalid input");
@@ -28,7 +30,7 @@ public class MessengerMain {
 
     }
 
-    private static void handleJoin(Scanner scanner) {
+    private static void handleJoin() {
         while (true) {
             Integer port = getPort(scanner);
             if (port == null) {
@@ -45,7 +47,7 @@ public class MessengerMain {
         }
     }
 
-    private static void handleStart(Scanner scanner) throws InterruptedException {
+    private static void handleStart() throws InterruptedException {
         while (true) {
             Integer port = getPort(scanner);
             if (port == null) {
