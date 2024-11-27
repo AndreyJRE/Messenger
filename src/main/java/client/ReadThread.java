@@ -1,5 +1,6 @@
 package client;
 
+import common.exception.UnknownMessageException;
 import common.message.ChatMessage;
 import common.message.ConnectionMessage;
 import common.message.ConnectionResponseMessage;
@@ -13,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 class ReadThread extends Thread {
 
     private final Socket socket;
+
     private final ChatClient client;
+
     private ObjectInputStream reader;
 
     public void run() {
@@ -47,7 +50,7 @@ class ReadThread extends Thread {
                     case REJECTED -> System.out.println("Username is already taken. Please try another one.");
                 }
             }
-            default -> System.out.println("Unknown message type: " + message);
+            default -> throw new UnknownMessageException();
         }
     }
 }

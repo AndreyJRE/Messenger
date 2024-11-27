@@ -13,8 +13,11 @@ import java.util.Scanner;
 class WriteThread extends Thread {
 
     private final Socket socket;
+
     private final ChatClient client;
+
     private final Scanner scanner;
+
     private ObjectOutputStream writer;
 
     public WriteThread(Socket socket, ChatClient client) {
