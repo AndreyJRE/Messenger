@@ -7,6 +7,7 @@ import common.message.Message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 class WriteThread extends Thread {
@@ -35,7 +36,7 @@ class WriteThread extends Thread {
         while (true) {
             try {
                 text = scanner.nextLine();
-            } catch (Exception e) {
+            } catch (NoSuchElementException e) {
                 System.out.println("You are disconnected from the chat");
                 break;
             }
