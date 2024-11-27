@@ -33,6 +33,7 @@ class WriteThread extends Thread {
         String username = getUsername(scanner);
         String text;
         while (true) {
+            // TODO If client is disconnected scanner is still waiting for input but it should break the loop
             text = scanner.nextLine();
             if (!client.isConnectedToChat()) {
                 System.out.println("You are disconnected from the chat");

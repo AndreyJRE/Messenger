@@ -36,10 +36,6 @@ public class ClientHandler implements Runnable {
         try {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            handleClientDisconnection();
-        }
-        try {
             while (true) {
                 if (socket.isClosed()) {
                     handleClientDisconnection();
